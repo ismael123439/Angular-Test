@@ -1,23 +1,13 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common'; // Agregamos CommonModule
+import { Component } from '@angular/core';
+import { TarjetaCreditoComponent } from './components/tarjeta-credito/tarjeta-credito.component';
 
 @Component({
-  selector: 'app-tarjeta-credito',
+  selector: 'app-root',
   standalone: true,
-  imports: [CommonModule], // Necesario para que las directivas estructurales funcionen
-  templateUrl: './components/tarjeta-credito/tarjeta-credito.component.html',
-  styleUrl: './components/tarjeta-credito/tarjeta-credito.component.css'
+  imports: [TarjetaCreditoComponent], // Importa el componente de tarjetas
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'] // ⚠️ corregido de styleUrl a styleUrls
 })
-export class TarjetaCreditoComponent implements OnInit {
-
-  // La lista de tarjetas ahora vive en este componente
-  listTarjetas: any[] = [
-    { titular: "Franco Mastantuono", numero: "1234567890123456", fechadeexpiracion: "9/12", cvv: "123" },
-    { titular: "Sebastian Driussi", numero: "4983844884474847", fechadeexpiracion: "9/12", cvv: "918" }
-  ];
-
-  constructor() { }
-
-  ngOnInit(): void {
-  }
+export class AppComponent {
+  title = 'FEtarjetadecredito';
 }

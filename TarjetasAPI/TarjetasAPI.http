@@ -1,0 +1,6 @@
+@TarjetasAPI_HostAddress = http://localhost:5293
+
+GET {{TarjetasAPI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

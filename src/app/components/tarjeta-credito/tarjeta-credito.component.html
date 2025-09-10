@@ -1,44 +1,108 @@
 <div class="container-fluid">
-    <div class="row justify-content-center">
-        <div class="col-12 col-lg-8">
-            <div class="card">
-                <div class="card-body">
-                    <h2 class="titulo text-center">TARJETA CRÉDITO</h2>
-                </div>
-            </div>
+  <div class="row justify-content-center">
+    <div class="col-12 col-lg-8">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="titulo text-center">TARJETA CRÉDITO</h2>
         </div>
+      </div>
     </div>
+  </div>
 
-    <div class="row mt-4 justify-content-center">
-        <div class="col-12 col-lg-6 d-flex flex-column align-items-center">
-            <div class="card w-100 mb-2">
-                <div class="card-body">
-                    <h5 class="titulo text-center">AGREGAR TARJETA</h5>
-                </div>
+  <div class="row mt-4 justify-content-center">
+    <div class="col-12 col-lg-6 d-flex flex-column align-items-center">
+
+      <!-- AGREGAR / EDITAR TARJETA -->
+      <div class="card w-100 mb-2">
+        <div class="card-body">
+          <h5 class="titulo text-center">{{ editIndex !== null ? 'EDITAR TARJETA' : 'AGREGAR TARJETA' }}</h5>
+          <form [formGroup]="tarjetaForm" (ngSubmit)="agregarTarjeta()">
+
+            <!-- Titular -->
+            <div class="input-group mb-3">
+              <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+              <input type="text" class="form-control" placeholder="Titular" formControlName="titular">
             </div>
-            
-            <div class="card w-100">
-                <div class="card-body">
-                    <h5 class="titulo text-center">LISTADO DE TARJETAS</h5>
-                    <table class="table">
-                        <tbody>
-                            @for (tarjeta of listTarjetas; track tarjeta.numero) {
-                                <tr>
-                                    <td>{{ tarjeta.titular }}</td>
-                                    <td>{{ tarjeta.numero }}</td>
-                                    <td>{{ tarjeta.fechadeexpiracion }}</td>
-                                    <td>
-                                        <i class="far fa-regular fa-pen-to-square text-info"></i>
-                                    </td>
-                                    <td>
-                                        <i class="far fa-solid fa-trash text-danger"></i>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </div>
+            <div *ngIf="tarjetaForm.get('titular')?.invalid && tarjetaForm.get('titular')?.touched" class="text-danger mb-2">
+              El titular es obligatorio.
             </div>
+
+            <!-- Número -->
+            <div class="input-group mb-3">
+              <span class="input-group-text"><i class="fa-solid fa-credit-card"></i></span>
+              <input type="text" class="form-control" placeholder="Número" formControlName="numero">
+            </div>
+            <div *ngIf="tarjetaForm.get('numero')?.invalid && tarjetaForm.get('numero')?.touched" class="text-danger mb-2">
+              Ingresá un número válido de 16 dígitos.
+            </div>
+
+            <div class="d-flex mb-3 gap-2">
+              <!-- Fecha de expiración -->
+              <div class="flex-fill">
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-solid fa-calendar"></i></span>
+                  <input 
+                    type="month" 
+                    class="form-control" 
+                    formControlName="fechadeexpiracion" 
+                    (change)="formatFecha($event)">
+                </div>
+                <div *ngIf="tarjetaForm.get('fechadeexpiracion')?.invalid && tarjetaForm.get('fechadeexpiracion')?.touched" class="text-danger">
+                  Seleccioná una fecha válida.
+                </div>
+              </div>
+
+              <!-- CVV -->
+              <div class="flex-fill">
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                  <input type="text" class="form-control" placeholder="CVV" formControlName="cvv">
+                </div>
+                <div *ngIf="tarjetaForm.get('cvv')?.invalid && tarjetaForm.get('cvv')?.touched" class="text-danger">
+                  CVV de 3 dígitos.
+                </div>
+              </div>
+            </div>
+
+            <!-- Botón Submit -->
+            <button type="submit" class="btn btn-primary w-100" [disabled]="tarjetaForm.invalid">
+              <i class="fa-solid fa-plus me-2"></i> {{ editIndex !== null ? 'Guardar Cambios' : 'Agregar Tarjeta' }}
+            </button>
+          </form>
         </div>
+      </div>
+
+      <!-- LISTADO DE TARJETAS -->
+      <div class="card w-100">
+        <div class="card-body">
+          <h5 class="titulo text-center">LISTADO DE TARJETAS</h5>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Titular</th>
+                <th>Número</th>
+                <th>Vencimiento</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let tarjeta of listTarjetas; let i = index">
+                <td>{{ tarjeta.titular }}</td>
+                <td>{{ tarjeta.numero }}</td>
+                <td>{{ tarjeta.fechadeexpiracion }}</td>
+                <td>
+                  <i class="far fa-regular fa-pen-to-square text-info" style="cursor:pointer" (click)="editarTarjeta(i)"></i>
+                </td>
+                <td>
+                  <i class="far fa-solid fa-trash text-danger" style="cursor:pointer" (click)="eliminarTarjeta(i)"></i>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </div>
+  </div>
 </div>
