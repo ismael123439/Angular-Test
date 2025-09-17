@@ -1,24 +1,24 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { catchError } from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-tarjeta-credito',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule], // 🔹 Agregamos HttpClientModule aquí
   templateUrl: './tarjeta-credito.component.html',
   styleUrls: ['./tarjeta-credito.component.css']
 })
-export class TarjetaCreditoComponent {
-  listTarjetas = [
-    { titular: 'Franco Mastantuono', numero: '1234567890123456', fechadeexpiracion: '09/12', cvv: '123' },
-    { titular: 'Sebastian Driussi', numero: '4983844884474847', fechadeexpiracion: '09/12', cvv: '918' }
-  ];
-
+export class TarjetaCreditoComponent implements OnInit {
+  listTarjetas: any[] = [];
   tarjetaForm: FormGroup;
-  editIndex: number | null = null; // 🔹 Para saber si estamos editando
+  editIndex: number | null = null;
+  apiUrl = 'https://localhost:5001/api/tarjetas';
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private http: HttpClient) {
     this.tarjetaForm = this.fb.group({
       titular: ['', Validators.required],
       numero: ['', [Validators.required, Validators.pattern(/^\d{16}$/)]],
@@ -27,57 +27,75 @@ export class TarjetaCreditoComponent {
     });
   }
 
-  // 🔹 Agregar o guardar cambios
+  ngOnInit(): void {
+    this.cargarTarjetas();
+  }
+
+  cargarTarjetas() {
+    this.http.get<any[]>(this.apiUrl)
+      .pipe(catchError(err => { console.error(err); return throwError(() => err); }))
+      .subscribe(data => this.listTarjetas = data);
+  }
+
   agregarTarjeta() {
-    if (this.tarjetaForm.valid) {
-      if (this.editIndex !== null) {
-        this.listTarjetas[this.editIndex] = { ...this.tarjetaForm.value };
-        this.editIndex = null;
-      } else {
-        this.listTarjetas.push({ ...this.tarjetaForm.value });
-      }
-      this.tarjetaForm.reset();
+    if (!this.tarjetaForm.valid) return;
+
+    if (this.editIndex !== null) {
+      const tarjeta = { ...this.tarjetaForm.value, id: this.listTarjetas[this.editIndex].id };
+      this.http.put(`${this.apiUrl}/${tarjeta.id}`, tarjeta)
+        .pipe(catchError(err => { console.error(err); return throwError(() => err); }))
+        .subscribe(() => {
+          this.listTarjetas[this.editIndex!] = tarjeta;
+          this.editIndex = null;
+          this.tarjetaForm.reset();
+        });
+    } else {
+      this.http.post<any>(this.apiUrl, this.tarjetaForm.value)
+        .pipe(catchError(err => { console.error(err); return throwError(() => err); }))
+        .subscribe(res => {
+          this.listTarjetas.push(res);
+          this.tarjetaForm.reset();
+        });
     }
   }
 
-  // 🔹 Editar tarjeta
   editarTarjeta(index: number) {
     const tarjeta = this.listTarjetas[index];
-    this.tarjetaForm.setValue({ ...tarjeta });
+    this.tarjetaForm.setValue({
+      titular: tarjeta.titular,
+      numero: tarjeta.numero,
+      fechadeexpiracion: tarjeta.fechadeexpiracion,
+      cvv: tarjeta.cvv
+    });
     this.editIndex = index;
   }
 
-  // 🔹 Eliminar tarjeta
   eliminarTarjeta(index: number) {
-    this.listTarjetas.splice(index, 1);
-    if (this.editIndex === index) {
-      this.tarjetaForm.reset();
-      this.editIndex = null;
-    }
+    const tarjeta = this.listTarjetas[index];
+    this.http.delete(`${this.apiUrl}/${tarjeta.id}`)
+      .pipe(catchError(err => { console.error(err); return throwError(() => err); }))
+      .subscribe(() => {
+        this.listTarjetas.splice(index, 1);
+        if (this.editIndex === index) {
+          this.tarjetaForm.reset();
+          this.editIndex = null;
+        }
+      });
   }
 
-  // 🔹 Formatear fecha MM/AA
-// Devuelve la fecha en formato MM/AA para mostrar en la tabla
-mostrarFecha(tarjeta: any) {
-  const valor = tarjeta.fechadeexpiracion;
-  if (!valor) return '';
-  
-  // Espera MM/AA
-  const partes = valor.split('/');
-  if (partes.length !== 2) return valor; // si no está en MM/AA, lo devuelve crudo
+  mostrarFecha(tarjeta: any) {
+    const valor = tarjeta.fechadeexpiracion;
+    if (!valor) return '';
+    const partes = valor.split('/');
+    if (partes.length !== 2) return valor;
+    const [mes, año] = partes;
+    return `${mes}/${año}`;
+  }
 
-  const [mes, año] = partes;
-  return `${mes}/${año}`;
+  autoFormatFecha(event: any) {
+    let valor = event.target.value.replace(/\D/g, '');
+    if (valor.length > 2) valor = valor.slice(0, 2) + '/' + valor.slice(2, 4);
+    event.target.value = valor;
+    this.tarjetaForm.patchValue({ fechadeexpiracion: valor }, { emitEvent: false });
+  }
 }
-
-
-autoFormatFecha(event: any) {
-  let valor = event.target.value.replace(/\D/g, ''); // saca todo lo que no sea número
-  if (valor.length > 2) valor = valor.slice(0,2) + '/' + valor.slice(2,4);
-  event.target.value = valor;
-  this.tarjetaForm.patchValue({ fechadeexpiracion: valor }, { emitEvent: false });
-}
-
-}
-
-
