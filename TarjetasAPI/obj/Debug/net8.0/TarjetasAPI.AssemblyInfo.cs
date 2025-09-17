@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TarjetasAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e8b3d44c62f068bf3549a507951d9880a33a2d5b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+be484721a80cfc158e126a093a14dce0dc178bca")]
 [assembly: System.Reflection.AssemblyProductAttribute("TarjetasAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TarjetasAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

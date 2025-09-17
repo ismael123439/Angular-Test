@@ -1,7 +1,11 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { AppComponent } from './app/app.component';
-import { appConfig } from './app/app.config';
+import { importProvidersFrom } from '@angular/core';
+import { HttpClientModule } from '@angular/common/http';
+import { ReactiveFormsModule } from '@angular/forms';
 
-// Bootstrap del cliente
-bootstrapApplication(AppComponent, appConfig)
-  .catch(err => console.error('Error al iniciar la aplicación:', err));
+bootstrapApplication(AppComponent, {
+  providers: [
+    importProvidersFrom(HttpClientModule, ReactiveFormsModule)
+  ]
+});

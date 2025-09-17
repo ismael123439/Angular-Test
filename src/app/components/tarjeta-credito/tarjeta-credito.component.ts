@@ -1,14 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
 
 @Component({
   selector: 'app-tarjeta-credito',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, HttpClientModule], // 🔹 Agregamos HttpClientModule aquí
+  imports: [CommonModule, ReactiveFormsModule, HttpClientModule],
   templateUrl: './tarjeta-credito.component.html',
   styleUrls: ['./tarjeta-credito.component.css']
 })

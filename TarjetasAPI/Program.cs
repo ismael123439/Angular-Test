@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using TarjetasAPI.Data;
+using TarjetasAPI.Data; // ⚠️ Asegurate que AppDbContext esté acá
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,7 +11,10 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
-        policy => policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+        policy => policy
+            .AllowAnyOrigin()   // ⚠️ Cambiar por tu URL de Angular en producción
+            .AllowAnyHeader()
+            .AllowAnyMethod());
 });
 
 // ----------------- Swagger -----------------
@@ -32,6 +35,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseCors("AllowAngular");
+
 app.MapControllers();
 
 // ----------------- Endpoint de prueba (opcional) -----------------
