@@ -7,10 +7,9 @@ import { TarjetaCreditoComponent } from './components/tarjeta-credito/tarjeta-cr
   standalone: true,
   imports: [CommonModule, TarjetaCreditoComponent],
   template: `
-    <div class="container mt-4">
-      <h1>Gestión de Tarjetas de Crédito</h1>
-      <app-tarjeta-credito></app-tarjeta-credito>
-    </div>
+   <app-tarjeta-credito></app-tarjeta-credito>
   `
 })
-export class AppComponent { }
+export class AppComponent {
+  title = 'FEtarjetadecredito';
+}

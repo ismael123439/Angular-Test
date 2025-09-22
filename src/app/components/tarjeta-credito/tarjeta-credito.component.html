@@ -1,120 +1,136 @@
 <div class="container-fluid">
-  <div class="row justify-content-center">
-    <div class="col-12 col-lg-8">
-      <div class="card">
-        <div class="card-body">
-          <h2 class="titulo text-center">💳 TARJETA CRÉDITO</h2>
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="titulo text-center">TARJETA CRÉDITO</h2>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
 
-  <div class="row mt-4 justify-content-center">
-    <div class="col-12 col-lg-6 d-flex flex-column align-items-center">
+    <div class="row mt-4 justify-content-center">
+        <div class="col-12 col-lg-6 d-flex flex-column align-items-center">
 
-      <!-- AGREGAR / EDITAR TARJETA -->
-      <div class="card w-100 mb-2 shadow-sm">
-        <div class="card-body">
-          <h5 class="titulo text-center">
-            {{ editIndex !== null ? '✏️ EDITAR TARJETA' : '➕ AGREGAR TARJETA' }}
-          </h5>
+            <div class="card w-100 mb-2 shadow-sm">
+                <div class="card-body">
+                    <h5 class="titulo text-center">
+                        {{ editIndex !== null ? '✏️ EDITAR TARJETA' : '➕ AGREGAR TARJETA' }}
+                    </h5>
 
-          <form [formGroup]="tarjetaForm" (ngSubmit)="agregarTarjeta()">
+                    <form [formGroup]="tarjetaForm" (ngSubmit)="agregarTarjeta()">
 
-            <!-- Titular -->
-            <div class="input-group mb-3">
-              <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
-              <input type="text" class="form-control" placeholder="Titular" formControlName="titular">
-            </div>
-            <div *ngIf="tarjetaForm.get('titular')?.invalid && tarjetaForm.get('titular')?.touched"
-                 class="text-danger mb-2">
-              ⚠️ El titular es obligatorio.
-            </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fa-solid fa-user"></i></span>
+                            <input type="text" class="form-control" placeholder="Titular" formControlName="titular">
+                        </div>
+                        <div *ngIf="tarjetaForm.get('titular')?.invalid && tarjetaForm.get('titular')?.touched"
+                            class="text-danger mb-2">
+                            ⚠️ El titular es obligatorio.
+                        </div>
 
-            <!-- Número -->
-            <div class="input-group mb-3">
-              <span class="input-group-text"><i class="fa-solid fa-credit-card"></i></span>
-              <input type="text" maxlength="16" class="form-control" placeholder="Número (16 dígitos)"
-                     formControlName="numero">
-            </div>
-            <div *ngIf="tarjetaForm.get('numero')?.invalid && tarjetaForm.get('numero')?.touched"
-                 class="text-danger mb-2">
-              ⚠️ Ingresá un número válido de 16 dígitos.
-            </div>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fa-solid fa-credit-card"></i></span>
+                            <input type="text" maxlength="16" class="form-control" placeholder="Número (16 dígitos)"
+                                formControlName="numero">
+                        </div>
+                        <div *ngIf="tarjetaForm.get('numero')?.invalid && tarjetaForm.get('numero')?.touched"
+                            class="text-danger mb-2">
+                            ⚠️ Ingresá un número válido de 16 dígitos.
+                        </div>
 
-            <div class="d-flex mb-3 gap-2">
-              <!-- Fecha de expiración -->
-              <div class="flex-fill">
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-calendar"></i></span>
-                  <input class="form-control" placeholder="MM/AA"
-                         formControlName="fechadeexpiracion"
-                         (input)="autoFormatFecha($event)">
+                        <div class="d-flex mb-3 gap-2">
+                            <div class="flex-fill">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-calendar"></i></span>
+                                    <input class="form-control" placeholder="MM/AA"
+                                        formControlName="fechadeexpiracion" (input)="autoFormatFecha($event)">
+                                </div>
+                                <div *ngIf="tarjetaForm.get('fechadeexpiracion')?.invalid && tarjetaForm.get('fechadeexpiracion')?.touched"
+                                    class="text-danger">
+                                    Seleccioná una fecha válida.
+                                </div>
+                            </div>
+
+                            <div class="flex-fill">
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
+                                    <input type="text" maxlength="3" class="form-control" placeholder="CVV"
+                                        formControlName="cvv">
+                                </div>
+                                <div *ngIf="tarjetaForm.get('cvv')?.invalid && tarjetaForm.get('cvv')?.touched"
+                                    class="text-danger">
+                                    CVV de 3 dígitos.
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100" [disabled]="tarjetaForm.invalid">
+                            <i class="fa-solid" [ngClass]="editIndex !== null ? 'fa-save' : 'fa-plus'"></i>
+                            {{ editIndex !== null ? 'Guardar Cambios' : 'Agregar Tarjeta' }}
+                        </button>
+                    </form>
                 </div>
-                <div *ngIf="tarjetaForm.get('fechadeexpiracion')?.invalid && tarjetaForm.get('fechadeexpiracion')?.touched"
-                     class="text-danger">
-                  Seleccioná una fecha válida.
-                </div>
-              </div>
-
-              <!-- CVV -->
-              <div class="flex-fill">
-                <div class="input-group">
-                  <span class="input-group-text"><i class="fa-solid fa-lock"></i></span>
-                  <input type="text" maxlength="3" class="form-control" placeholder="CVV" formControlName="cvv">
-                </div>
-                <div *ngIf="tarjetaForm.get('cvv')?.invalid && tarjetaForm.get('cvv')?.touched"
-                     class="text-danger">
-                  CVV de 3 dígitos.
-                </div>
-              </div>
             </div>
 
-            <!-- Botón Submit -->
-            <button type="submit" class="btn btn-primary w-100" [disabled]="tarjetaForm.invalid">
-              <i class="fa-solid" [ngClass]="editIndex !== null ? 'fa-save' : 'fa-plus'"></i>
-              {{ editIndex !== null ? 'Guardar Cambios' : 'Agregar Tarjeta' }}
-            </button>
-          </form>
+            <div class="card w-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="titulo text-center">📋 LISTADO DE TARJETAS</h5>
+                    <table class="table table-striped align-middle">
+                        <thead>
+                            <tr>
+                                <th>Titular</th>
+                                <th>Número</th>
+                                <th>Vencimiento</th>
+                                <th>CVV</th>
+                                <th class="text-center">Editar</th>
+                                <th class="text-center">Eliminar</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let tarjeta of listTarjetas; let i = index">
+                                <td>{{ tarjeta.titular }}</td>
+
+                                <td>{{ tarjeta.numeroTarjeta }}</td>
+
+                                <td>{{ tarjeta.fechaVencimiento | date:'MM/yy' }}</td>
+
+                                <td class="align-middle">
+                                    <div class="d-flex align-items-center gap-2">
+                                        <span>
+                                            <ng-container *ngIf="cvvVisibility[tarjeta.id]; else hiddenCvv">
+                                                {{ tarjeta.codigoSeguridad }}
+                                            </ng-container>
+                                            <ng-template #hiddenCvv>
+                                                ***
+                                            </ng-template>
+                                        </span>
+                                        
+                                        <span class="input-group-text p-0 border-0 bg-transparent" style="cursor: pointer; padding-left: 5px !important;"
+                                            (click)="toggleCvvVisibility(tarjeta.id)">
+                                            <i class="fa-solid"
+                                                [ngClass]="cvvVisibility[tarjeta.id] ? 'fa-eye-slash text-success' : 'fa-eye text-secondary'"></i>
+                                        </span>
+                                    </div>
+                                </td>
+
+                                <td class="text-center">
+                                    <i class="fa-solid fa-pen-to-square text-info" style="cursor:pointer"
+                                        (click)="editarTarjeta(i)"></i>
+                                </td>
+                                <td class="text-center">
+                                    <i class="fa-solid fa-trash text-danger" style="cursor:pointer"
+                                        (click)="eliminarTarjeta(i)"></i>
+                                </td>
+                            </tr>
+                            <tr *ngIf="listTarjetas.length === 0">
+                                <td colspan="6" class="text-center text-muted">No hay tarjetas registradas.</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
         </div>
-      </div>
-
-      <!-- LISTADO DE TARJETAS -->
-      <div class="card w-100 shadow-sm">
-        <div class="card-body">
-          <h5 class="titulo text-center">📋 LISTADO DE TARJETAS</h5>
-          <table class="table table-striped align-middle">
-            <thead>
-              <tr>
-                <th>Titular</th>
-                <th>Número</th>
-                <th>Vencimiento</th>
-                <th class="text-center">Editar</th>
-                <th class="text-center">Eliminar</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let tarjeta of listTarjetas; let i = index">
-                <td>{{ tarjeta.titular }}</td>
-                <td>{{ tarjeta.numero }}</td>
-                <td>{{ mostrarFecha(tarjeta) }}</td>
-                <td class="text-center">
-                  <i class="fa-solid fa-pen-to-square text-info" style="cursor:pointer"
-                     (click)="editarTarjeta(i)"></i>
-                </td>
-                <td class="text-center">
-                  <i class="fa-solid fa-trash text-danger" style="cursor:pointer"
-                     (click)="eliminarTarjeta(i)"></i>
-                </td>
-              </tr>
-              <tr *ngIf="listTarjetas.length === 0">
-                <td colspan="5" class="text-center text-muted">No hay tarjetas registradas.</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
     </div>
-  </div>
 </div>
