@@ -43,8 +43,8 @@
                             <div class="flex-fill">
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fa-solid fa-calendar"></i></span>
-                                    <input class="form-control" placeholder="MM/AA"
-                                        formControlName="fechadeexpiracion" (input)="autoFormatFecha($event)">
+                                    <input class="form-control" placeholder="MM/AA" formControlName="fechadeexpiracion"
+                                        (input)="autoFormatFecha($event)">
                                 </div>
                                 <div *ngIf="tarjetaForm.get('fechadeexpiracion')?.invalid && tarjetaForm.get('fechadeexpiracion')?.touched"
                                     class="text-danger">
@@ -75,62 +75,70 @@
 
             <div class="card w-100 shadow-sm">
                 <div class="card-body">
-                    <h5 class="titulo text-center">📋 LISTADO DE TARJETAS</h5>
-                    <table class="table table-striped align-middle">
-                        <thead>
-                            <tr>
-                                <th>Titular</th>
-                                <th>Número</th>
-                                <th>Vencimiento</th>
-                                <th>CVV</th>
-                                <th class="text-center">Editar</th>
-                                <th class="text-center">Eliminar</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr *ngFor="let tarjeta of listTarjetas; let i = index">
-                                <td>{{ tarjeta.titular }}</td>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="titulo d-flex align-items-center gap-2">
+                            LISTADO DE TARJETAS
+                            <a href="javascript:void(0)" (click)="toggleLista()">
+                                <i class="fa-solid" [ngClass]="mostrarLista ? 'fa-angle-up' : 'fa-angle-down'"
+                                    style="transition: transform 0.3s;"></i>
+                            </a>
+                        </h5>
+                        <div class="col-12 col-md-4">
+                            <input type="text" class="form-control" placeholder="Buscar por titular"
+                                [(ngModel)]="searchText" (input)="buscarTarjetas()">
+                        </div>
+                    </div>
 
-                                <td>{{ tarjeta.numeroTarjeta }}</td>
-
-                                <td>{{ tarjeta.fechaVencimiento | date:'MM/yy' }}</td>
-
-                                <td class="align-middle">
-                                    <div class="d-flex align-items-center gap-2">
-                                        <span>
-                                            <ng-container *ngIf="cvvVisibility[tarjeta.id]; else hiddenCvv">
-                                                {{ tarjeta.codigoSeguridad }}
-                                            </ng-container>
-                                            <ng-template #hiddenCvv>
-                                                ***
-                                            </ng-template>
-                                        </span>
-                                        
-                                        <span class="input-group-text p-0 border-0 bg-transparent" style="cursor: pointer; padding-left: 5px !important;"
-                                            (click)="toggleCvvVisibility(tarjeta.id)">
-                                            <i class="fa-solid"
-                                                [ngClass]="cvvVisibility[tarjeta.id] ? 'fa-eye-slash text-success' : 'fa-eye text-secondary'"></i>
-                                        </span>
-                                    </div>
-                                </td>
-
-                                <td class="text-center">
-                                    <i class="fa-solid fa-pen-to-square text-info" style="cursor:pointer"
-                                        (click)="editarTarjeta(i)"></i>
-                                </td>
-                                <td class="text-center">
-                                    <i class="fa-solid fa-trash text-danger" style="cursor:pointer"
-                                        (click)="eliminarTarjeta(i)"></i>
-                                </td>
-                            </tr>
-                            <tr *ngIf="listTarjetas.length === 0">
-                                <td colspan="6" class="text-center text-muted">No hay tarjetas registradas.</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="table-container" [class.collapsed]="!mostrarLista">
+                        <table class="table table-striped align-middle">
+                            <thead>
+                                <tr>
+                                    <th>Titular</th>
+                                    <th>Número</th>
+                                    <th>Vencimiento</th>
+                                    <th>CVV</th>
+                                    <th class="text-center">Editar</th>
+                                    <th class="text-center">Eliminar</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let tarjeta of listTarjetasFiltradas; let i = index">
+                                    <td>{{ tarjeta.titular }}</td>
+                                    <td>{{ tarjeta.numeroTarjeta }}</td>
+                                    <td>{{ tarjeta.fechaVencimiento | date:'MM/yy' }}</td>
+                                    <td class="align-middle">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span>
+                                                <ng-container *ngIf="cvvVisibility[tarjeta.id]; else hiddenCvv">
+                                                    {{ tarjeta.codigoSeguridad }}
+                                                </ng-container>
+                                                <ng-template #hiddenCvv>***</ng-template>
+                                            </span>
+                                            <span class="input-group-text p-0 border-0 bg-transparent"
+                                                style="cursor: pointer; padding-left: 5px !important;"
+                                                (click)="toggleCvvVisibility(tarjeta.id)">
+                                                <i class="fa-solid"
+                                                    [ngClass]="cvvVisibility[tarjeta.id] ? 'fa-eye-slash text-success' : 'fa-eye text-secondary'"></i>
+                                            </span>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <i class="fa-solid fa-pen-to-square text-info" style="cursor:pointer"
+                                            (click)="editarTarjeta(i)"></i>
+                                    </td>
+                                    <td class="text-center">
+                                        <i class="fa-solid fa-trash text-danger" style="cursor:pointer"
+                                            (click)="eliminarTarjeta(i)"></i>
+                                    </td>
+                                </tr>
+                                <tr *ngIf="listTarjetasFiltradas.length === 0">
+                                    <td colspan="8" class="text-center text-muted">No hay tarjetas registradas.</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
 </div>
