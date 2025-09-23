@@ -11,5 +11,5 @@ import { TarjetaCreditoComponent } from './components/tarjeta-credito/tarjeta-cr
   `
 })
 export class AppComponent {
-  title = 'FEtarjetadecredito';
+  title = 'Pagos con Tarjeta de Crédito';
 }
